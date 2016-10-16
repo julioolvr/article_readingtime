@@ -55,20 +55,6 @@ ArticleReadingtime.estimate_html <<HTML, images: { max: 15, min: 5, step: 2 }
 HTML
 ```
 
-For even more customization, a lambda can be passed to the `images` option, which will receive the whole image tag as a string, its index in the article starting at 0, and the total count of images; and should return the number of seconds it would take to read that image:
-
-```ruby
-image_calculation = -> (image_tag, index, total_count) {
-  3 * total_count - index
-}
-
-ArticleReadingtime.estimate_html <<HTML, images: image_calculation
-  <article>
-    <!-- ... -->
-  </article>
-HTML
-```
-
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
