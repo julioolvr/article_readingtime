@@ -30,5 +30,32 @@ describe ArticleReadingtime do
 
       expect(ArticleReadingtime.estimate_html(html)).to equal expected_time
     end
+
+    describe 'options' do
+      it 'supports a custom WPM count' do
+        word_count = 300
+        html = "<div>#{Array.new(word_count) { 'word' }.join(' ')}</div>"
+        expect(ArticleReadingtime.estimate_html(html, wpm: word_count)).to equal 60
+      end
+
+      it 'supports a custom maximum image time' do
+        image_time = 20
+        html = '<img src="something.jpg"/>'
+        expect(ArticleReadingtime.estimate_html(html, images: { max: image_time })).to equal image_time
+      end
+
+      it 'supports a custom minimum image time' do
+        image_time = 13
+        html = '<img src="something.jpg"/>' * 5
+        expect(ArticleReadingtime.estimate_html(html, images: { min: image_time })).to equal 15 + 14 + 13 + 13 + 13
+      end
+
+      it 'supports a custom step for image time' do
+        image_step = 2
+        html = '<img src="something.jpg"/>' * 3
+        count = ArticleReadingtime.estimate_html(html, images: { step: image_step })
+        expect(count).to equal 15 + 13 + 11
+      end
+    end
   end
 end

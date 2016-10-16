@@ -8,24 +8,35 @@ IMAGE_MIN = 3
 IMAGE_STEP = 1
 
 module ArticleReadingtime
-  def self.estimate_html(html)
+  def self.estimate_html(html, options = {})
+    wpm = options[:wpm] || WORDS_PER_MINUTE
+    images_options = default_image_options(options[:images] || {})
+
     doc = Nokogiri::HTML(html)
-    count_text(doc) + count_images(doc)
+    count_text(doc, wpm) + count_images(doc, images_options)
   end
 
-  def self.count_text(doc)
+  def self.default_image_options(options)
+    {
+      max: options[:max] || IMAGE_MAX,
+      min: options[:min] || IMAGE_MIN,
+      step: options[:step] || IMAGE_STEP
+    }
+  end
+
+  def self.count_text(doc, wpm)
     words = doc.inner_text.split(' ')
-    (words.length / WORDS_PER_MINUTE.to_f * 60).round
+    (words.length / wpm.to_f * 60).round
   end
 
-  def self.count_images(doc)
+  def self.count_images(doc, options)
     images_count = doc.css('img').length
 
     images_count.times.reduce(0) do |total, i|
-      total + if IMAGE_MAX - i * IMAGE_STEP > IMAGE_MIN
-                IMAGE_MAX - i
+      total + if options[:max] - i * options[:step] > options[:min]
+                options[:max] - i * options[:step]
               else
-                IMAGE_MIN
+                options[:min]
               end
     end
   end
