@@ -1,8 +1,6 @@
 # ArticleReadingtime
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/article_readingtime`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+Given an HTML article, it calculates an estimated reading time for it. Similar to what [Medium does](https://help.medium.com/hc/en-us/articles/214991667-Read-time), although the exact behavior can be customized.
 
 ## Installation
 
@@ -22,7 +20,54 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+```ruby
+require 'article_readingtime'
+
+ArticleReadingtime.estimate_html <<HTML
+  <article>
+    <p>
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+      sed do eiusmod tempor incididun
+    </p>
+  </article>
+HTML
+
+#=> 3
+```
+
+`ArticleReadingtime.estimate_html` receives an HTML string and returns an estimate of the time in seconds it takes to read it. By default, it considers an average of 275 WPM. The first image is counted as 12 seconds, the second one as 11 seconds, and it keeps decreasing down to 3 seconds for each image. A second optional parameter can be used to customize these values:
+
+```ruby
+ArticleReadingtime.estimate_html <<HTML, wpm: 300
+  <article>
+    <!-- ... -->
+  </article>
+HTML
+```
+
+Image time calculation can be customized in two ways - the first one is to change the maximum, minimum and step. For instance, for the first image to be counted as 15 seconds, down until 5 seconds, and reduce 2 seconds for each new image, the options would look like:
+
+```ruby
+ArticleReadingtime.estimate_html <<HTML, images: { max: 15, min: 5, step: 2 }
+  <article>
+    <!-- ... -->
+  </article>
+HTML
+```
+
+For even more customization, a lambda can be passed to the `images` option, which will receive the whole image tag as a string, its index in the article starting at 0, and the total count of images; and should return the number of seconds it would take to read that image:
+
+```ruby
+image_calculation = -> (image_tag, index, total_count) {
+  3 * total_count - index
+}
+
+ArticleReadingtime.estimate_html <<HTML, images: image_calculation
+  <article>
+    <!-- ... -->
+  </article>
+HTML
+```
 
 ## Development
 
@@ -32,10 +77,9 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/article_readingtime.
+Bug reports and pull requests are welcome on GitHub at https://github.com/julioolvr/article_readingtime.
 
 
 ## License
 
 The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
-
