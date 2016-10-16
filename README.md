@@ -45,7 +45,7 @@ ArticleReadingtime.estimate_html <<HTML, wpm: 300
 HTML
 ```
 
-Image time calculation can be customized in two ways - the first one is to change the maximum, minimum and step. For instance, for the first image to be counted as 15 seconds, down until 5 seconds, and reduce 2 seconds for each new image, the options would look like:
+Image time calculation can be customized by changing the maximum, minimum and step. For instance, for the first image to be counted as 15 seconds, down until 5 seconds, and reduce 2 seconds for each new image, the options would look like:
 
 ```ruby
 ArticleReadingtime.estimate_html <<HTML, images: { max: 15, min: 5, step: 2 }
