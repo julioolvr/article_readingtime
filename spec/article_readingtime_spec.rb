@@ -1,11 +1,11 @@
 require 'spec_helper'
 
 describe ArticleReadingtime do
-  it 'has a version number' do
-    expect(ArticleReadingtime::VERSION).not_to be nil
-  end
-
-  it 'does something useful' do
-    expect(false).to eq(true)
+  describe '.estimate_html' do
+    it 'counts words at 275 wpm' do
+      word_count = 275
+      html = "<div>#{word_count.times.map { 'word' }.join(' ')}</div>"
+      expect(ArticleReadingtime.estimate_html(html)).to equal 60
+    end
   end
 end
