@@ -1,4 +1,4 @@
-require "article_readingtime/version"
+require 'article_readingtime/version'
 
 require 'nokogiri'
 

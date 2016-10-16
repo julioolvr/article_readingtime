@@ -1,0 +1,6 @@
+AllCops:
+  Exclude:
+    - article_readingtime.gemspec
+
+Style/Documentation:
+  Enabled: false
